@@ -41,9 +41,13 @@ def main():
     theta_list = np.zeros(K, dtype=object)
     degrees = np.arange(K) + 1
 
+
+
+
     # Compute the MSE values
     for i in range(K):
         theta_list[i], mse_train[i], mse_val[i], mse_test[i] = poly.train_and_test(data, degrees[i])
+
 
     ######################
     #
@@ -55,16 +59,21 @@ def main():
     # TIPs:
     # - use the argmin function of numpy
     # - the code above is already giving the vectors of errors
-    i_best = 0  # TODO: Change this
+    i_best = np.where(mse_val == mse_val.min())
+    i_besttrain = np.where(mse_train == mse_train.min())
+    #i_best = 0  # TODO: Change this
     best_degree = degrees[i_best]
     best_theta = theta_list[i_best]
+    best_theta_array = best_theta[0]
     #
     # END TODO
     ######################
-
+    #Plot the best train error
+    plot_poly(data, degrees[i_besttrain][0], theta_list[i_besttrain][0])
+    plt.show()
     # Plot the training error as a function of the degrees
     plot_errors(i_best, degrees, mse_train, mse_val, mse_test)
-    plot_poly(data, best_degree, best_theta)
+    plot_poly(data, best_degree[0], best_theta_array)
     plt.show()
 
 

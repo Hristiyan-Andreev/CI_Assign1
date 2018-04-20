@@ -64,7 +64,7 @@ def plot_rbf(data, n_center, theta_opt, n_line_precision=100):
 
         mse = rbf.compute_error(theta_opt, n_center, data[x], data[y])
 
-        ax_list[a].set_title('Set {} (MSE {:.3g}) '.format(ti, mse))
+        ax_list[a].set_title('Set {} (MSE {:.3g}) '.format(ti, mse[0]))
         ax_list[a].set_xlim([-1, 1])
         ax_list[a].set_ylim([-5, 5])
 
@@ -73,12 +73,12 @@ def plot_errors(i_best, n_centers, mse_train, mse_val, mse_test):
     """
     Display the evolution of the error when the center number is increasing
 
-    :param i_best:
-    :param n_centers:
-    :param mse_train:
-    :param mse_val:
-    :param mse_test:
-    :return:
+    :param i_best: index of the best parameters
+    :param n_centers: number of RBF centers
+    :param mse_train: list of the train errors
+    :param mse_val: list of the validation errors
+    :param mse_test: list of the test errors
+    :return: (gunpowder)plot
     """
 
     ######################
@@ -92,7 +92,16 @@ def plot_errors(i_best, n_centers, mse_train, mse_val, mse_test):
     # Tips:
     #  - Don't forget to make everything readable with legend title
 
-    plt.plot(n_centers, n_centers, label='Change me', linewidth=3)
+    for mse, lab in zip([mse_train, mse_val, mse_test], ['train', 'val', 'test']):
+        plt.plot(n_centers, mse, label=lab, linewidth=3)
+
+    plt.ylim([0, 1])
+    plt.axvline(x=n_centers[i_best], color='black', linestyle='--', linewidth=3,
+                label='Optimal degree {}'.format(n_centers[i_best]))
+    plt.xlabel('Degrees')
+    plt.ylabel('MSE')
+    plt.legend()
+#    plt.plot(n_centers, n_centers, label='MSE vs Centers', linewidth=3)
 
     #
     # END TODO

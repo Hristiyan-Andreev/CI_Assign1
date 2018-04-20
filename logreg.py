@@ -2,6 +2,7 @@
 import numpy as np
 
 from logreg_toolbox import sig
+from logreg_toolbox import poly_2D_design_matrix
 
 __author__ = 'bellec, subramoney'
 
@@ -34,8 +35,15 @@ def cost(theta, x, y):
     #   - sums of logs of numbers close to zero might lead to numerical errors, try splitting the cost into the sum
     # over positive and negative samples to overcome the problem. If the problem remains note that low errors is not
     # necessarily a problem for gradient descent because only the gradient of the cost is used for the parameter updates.
+    hypo = sig(np.dot(x,theta))
 
-    c = 0
+    truehypoindexes = np.where(y)[0]
+    falsehypo = np.delete(hypo, truehypoindexes)
+
+    cost0 = sum(-np.log(1 - falsehypo))
+    cost1 = sum(-np.log(hypo[truehypoindexes]))
+
+    c = (cost0+cost1)/N
 
     # END TODO
     ###########
@@ -59,9 +67,10 @@ def grad(theta, x, y):
     #
     # TODO
     #
-
+    hypo = sig(np.dot(x, theta))
     g = np.zeros(theta.shape)
-
+    error = hypo-y
+    g = (1/N) * (np.dot(error.T, x))
     # END TODO
     ###########
 

@@ -35,10 +35,10 @@ def poly_2D_design_matrix(x1, x2, degree):
     """
     Create the expanded design matrix with all polynoms of x1 and x2 up to degree
 
-    :param x1:
-    :param x2:
-    :param degree:
-    :return:
+    :param x1: feature 1
+    :param x2: feature 2
+    :param degree: polynomial degree
+    :return: design matrix
     """
     N = x1.size
 
@@ -56,9 +56,9 @@ def plot_logreg(data, degree, theta, E_list):
     """
     Plot the results for the logistic regression exercice
 
-    :param data:
-    :param degree:
-    :param theta:
+    :param data: input data
+    :param degree: degree of estimated model
+    :param theta: thetas of the estimated model
     :param Jtrain:
     :param Jtest:
     :return:

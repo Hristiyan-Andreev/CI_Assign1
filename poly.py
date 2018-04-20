@@ -43,8 +43,15 @@ def design_matrix(x, degree):
     # Look at the function description for more info
     #
     # TIP: use the power function from numpy
+    x = np.squeeze(np.asarray(x))
+    N = x.shape[0]
+    X = np.zeros((N, degree+1))
 
-    X = x  # TODO: change me
+    for j in range(0, degree+1): #loop from 0 to degree+1 -1 pay attention
+        powerj = np.power(x, j)
+        X[:, j] = powerj
+
+    #X = x  # TODO: change me
 
     #
     # END TODO
@@ -79,8 +86,11 @@ def train(x, y, degree):
     #  - To compute the pseudo inverse (A*A.T)^-1 * A.T with a more stable algorithm numpy provides the function pinv
     #   pinv is accessible in the sub-library numpy.linalg
     #
-
-    theta_opt = np.zeros(degree + 1)  # TODO: Change me
+    #------------------------------------------
+    #data expansion
+    X = design_matrix(x, degree)
+    theta_opt = np.dot(np.linalg.pinv(X),y)
+    #theta_opt = np.zeros(degree + 1)  # TODO: Change me
 
     # END TODO
     ######################
@@ -113,8 +123,9 @@ def compute_error(theta, degree, x, y):
     #               Then * becomes a matrix multiplication
     #
     #  - One can use the numpy function mean
-
-    err = -1  # TODO: Change me
+    X = design_matrix(x, degree)
+    hypo = np.dot(X, theta)
+    err = sum((hypo - y)**2) / y.shape[0] # TODO: Change me
 
     #
     # END TODO
@@ -127,9 +138,9 @@ def train_and_test(data, degree):
     """
     Train the model with degree 'degree' and provide the MSE for the training, validation and testing sets
 
-    :param data:
-    :param degree:
-    :return:
+    :param data: input data
+    :param degree: polynomial degree
+    :return: trained theta, Errors of train, test and validation sets
     """
 
     theta = train(data['x_train'], data['y_train'], degree)

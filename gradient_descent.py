@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 import numpy as np
+from logreg import grad
 
 __author__ = 'bellec, subramoney'
 
@@ -21,10 +22,10 @@ def gradient_descent(f, df, theta0, learning_rate, max_iter):
     Until the number of iteration is reached, decrease the parameter x by the gradient times the learning_rate.
     The function should return the minimal argument x and the list of errors at each iteration in a numpy array.
 
-    :param f: function to minimize
-    :param df: gradient of f
+    :param f: function to minimize (cost function)
+    :param df: gradient of f  (grad function)
     :param theta0: initial point
-    :param learning_rate:
+    :param learning_rate: constant learning rate
     :param max_iter: maximal number of iterations
     :return: x (solution), E_list (array of errors over iterations)
     """
@@ -33,9 +34,14 @@ def gradient_descent(f, df, theta0, learning_rate, max_iter):
     # TODO
     #
     # Implement a gradient descent algorithm
-
     E_list = np.zeros(max_iter)
     theta = theta0
+
+    for iter in range(max_iter):
+        theta = theta - learning_rate*df(theta)
+        E_list[iter] = f(theta)
+
+
 
     # END TODO
     ###########
@@ -72,9 +78,24 @@ def adaptative_gradient_descent(f, df, theta0, initial_learning_rate, max_iter):
 
     E_list = np.zeros(max_iter)
     lr_list = np.zeros(max_iter)
-    theta = theta0
+    current_theta = theta0
+
+    learning_rate = initial_learning_rate
+    E_list[0] = f(current_theta)
+    lr_list[0] = learning_rate
+    for iter in range(1,max_iter):
+        previous_theta = current_theta
+        current_theta = current_theta - learning_rate*df(current_theta)
+        E_list[iter] = f(current_theta)
+        lr_list[iter] = learning_rate
+        if E_list[iter] <= E_list[iter-1]:
+            learning_rate = learning_rate*1.03
+        elif E_list[iter] > E_list[iter-1]:
+            learning_rate = learning_rate*0.7
+            current_theta = previous_theta
+
 
     # END TODO
     ###########
 
-    return theta, E_list, lr_list
+    return current_theta, E_list, lr_list

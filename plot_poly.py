@@ -62,7 +62,7 @@ def plot_poly(data, degree, theta_opt, n_line_precision=100):
 
         mse = poly.compute_error(theta_opt, degree, data[x], data[y])
 
-        ax_list[a].set_title('Set {} (MSE {:.3g}) '.format(ti, mse))
+        ax_list[a].set_title('Set {} (MSE {:.3g}) '.format(ti, mse[0]))
         ax_list[a].set_xlim([-1, 1])
         ax_list[a].set_ylim([-5, 5])
 
@@ -71,12 +71,12 @@ def plot_errors(i_best, degrees, mse_train, mse_val, mse_test):
     """
     Display the evolution of the error when the degree is increasing
 
-    :param i_best:
-    :param degrees:
-    :param mse_train:
-    :param mse_val:
-    :param mse_test:
-    :return:
+    :param i_best: index of the best parameters
+    :param degrees: list of  the possible degrees
+    :param mse_train: list of the train errors
+    :param mse_val: list of the validation errors
+    :param mse_test: list of the test errors
+    :return: PLOT
     """
 
     for mse, lab in zip([mse_train, mse_val, mse_test], ['train', 'val', 'test']):

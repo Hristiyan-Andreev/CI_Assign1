@@ -23,7 +23,7 @@ TODO boxes are to be found here and in 'rbf.py'
 
 def main():
     # Number of possible degrees to be tested
-    K = 40
+    K = 30
     data_path = 'data_linreg.json'
 
     # Load the data
@@ -53,16 +53,25 @@ def main():
     theta_list = np.zeros(K, dtype=object)
     n_centers = np.arange(K) + 1
 
-    # Compute the MSE values
     i_best = 0
+    # Compute the MSE values
 
+    for i in range(K):
+        theta_list[i], mse_train[i], mse_val[i], mse_test[i] = rbf.train_and_test(data, int(n_centers[i]))
+
+
+    i_best = np.where(mse_val == mse_val.min())
+    i_besttrain = np.where(mse_train == mse_train.min())
+
+    plot_rbf(data, n_centers[i_besttrain][0], theta_list[i_besttrain][0])
+    plt.show()
     #
     # TODO END
     ######################
 
     # Plot the training error as a function of the degrees
     plot_errors(i_best, n_centers, mse_train, mse_val, mse_test)
-    plot_rbf(data, n_centers[i_best], theta_list[i_best])
+    plot_rbf(data, n_centers[i_best][0], theta_list[i_best][0])
     plt.show()
 
 

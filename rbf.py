@@ -23,8 +23,8 @@ The functions are:
 def get_centers_and_sigma(n_centers):
     """
     Create for a given center numbers the numpy array containing the centers and provide a good sigma
-    :param n_centers:
-    :return:
+    :param n_centers: number of RBF centers
+    :return: The actual positions of the centers and their widths
     """
 
     ######################
@@ -39,7 +39,10 @@ def get_centers_and_sigma(n_centers):
 
     centers = np.zeros(n_centers)  # TODO: Change me
     sigma = 1.  # TODO: Change me
-
+    step = 2/(n_centers+1)
+    for i in range(0, int(n_centers)):
+        centers[i] = -1 + (i+1)*step
+    sigma = 2/n_centers
     # END TODO
     ######################
 
@@ -75,9 +78,15 @@ def design_matrix(x, centers, sigma):
     #
     # TIP: don't forget that the first row has only ones
     #
-
+    n_centers = centers.shape[0]
     res = x  # TODO: Change me
-
+    x = np.squeeze(np.asarray(x))
+    N = x.shape[0]
+    X = np.ones((N,n_centers+1))
+    for j in range(1, n_centers+1):  # loop from 0 to degree+1 -1 pay attention
+        col = np.exp(-np.power(x-centers[j-1], 2)/(2*np.power(sigma, 2)))
+        X[:, j] = col
+    res = X
     # END TODO
     ######################
 
@@ -106,8 +115,10 @@ def train(x, y, n_centers):
     #   - Don't forget to first expand the data
     #   - This should not be very different from the solution you provided in poly.py
     #
+    centers, sigma = get_centers_and_sigma(n_centers)
+    X = design_matrix(x,centers,sigma)
+    theta_opt = np.dot(np.linalg.pinv(X), y)
 
-    theta_opt = np.zeros(n_centers + 1)  # TODO: Change me
 
     # END TODO
     ######################
@@ -137,9 +148,10 @@ def compute_error(theta, n_centers, x, y):
     #   - Don't forget to first expand the data
     #   - This should not be very different from the solution you provided in poly.py
     #
-
-    err = -1  # TODO: Change me
-
+    centers, sigma = get_centers_and_sigma(n_centers)
+    X = design_matrix(x, centers, sigma)
+    hypo = np.dot(X, theta)
+    err = sum((hypo - y) ** 2) / y.shape[0]
     # END TODO
     ######################
 
@@ -151,9 +163,9 @@ def train_and_test(data, n_centers):
     Train the model with the number of centers 'n_centers' and provide the MSE for the training, validation and testing
      sets
 
-    :param data:
+    :param data: input data
     :param n_centers: number of centers
-    :return:
+    :return: Parameters of trained model, errors for validation and test set
     """
 
     theta = train(data['x_train'], data['y_train'], n_centers)
